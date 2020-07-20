@@ -115,6 +115,8 @@ namespace Renderer
 
         private unsafe PixelData pixelDataFromVertex<T>(ref RasterizerVertex v) where T : IPixelShader
         {
+            var shader = (T)this.shader;
+
             PixelData p = new PixelData();
             p.x = (int)v.x;
             p.y = (int)v.y;
@@ -129,6 +131,8 @@ namespace Renderer
 
         private void drawPointTemplate<T>(ref RasterizerVertex v) where T : IPixelShader
         {
+            var shader = (T)this.shader;
+
             // Check scissor rect
             if (!scissorTest(v.x, v.y))
                 return;
@@ -139,6 +143,8 @@ namespace Renderer
 
         private void drawLineTemplate<T>(ref RasterizerVertex v0, ref RasterizerVertex v1) where T : IPixelShader
         {
+            var shader = (T)this.shader;
+
             int adx = Math.Abs((int)v1.x - (int)v0.x);
             int ady = Math.Abs((int)v1.y - (int)v0.y);
             int steps = Math.Max(adx, ady);
@@ -159,6 +165,8 @@ namespace Renderer
 
         public unsafe void stepVertex<T>(ref RasterizerVertex v, ref RasterizerVertex step) where T : IPixelShader
         {
+            var shader = (T)this.shader;
+
             v.x += step.x;
             v.y += step.y;
             if (shader.InterpolateZ) v.z += step.z;
@@ -171,6 +179,8 @@ namespace Renderer
 
         private unsafe RasterizerVertex computeVertexStep<T>(ref RasterizerVertex v0, ref RasterizerVertex v1, int adx) where T : IPixelShader
         {
+            var shader = (T)this.shader;
+
             RasterizerVertex step = new RasterizerVertex();
             step.x = (v1.x - v0.x) / adx;
             step.y = (v1.y - v0.y) / adx;
@@ -185,6 +195,8 @@ namespace Renderer
 
         private void drawTriangleBlockTemplate<T>(ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2) where T : IPixelShader
         {
+            var shader = (T)this.shader;
+
             // Compute triangle equations.
             TriangleEquations eqn = new TriangleEquations(ref v0, ref v1, ref v2, shader.AVarCount, shader.PVarCount);
 
@@ -267,6 +279,8 @@ namespace Renderer
 
         private unsafe void drawTriangleSpanTemplate<T>(ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2) where T : IPixelShader
         {
+            var shader = (T)this.shader;
+
             // Compute triangle equations.
             TriangleEquations eqn = new TriangleEquations(ref v0, ref v1, ref v2, shader.AVarCount, shader.PVarCount);
 
@@ -319,6 +333,8 @@ namespace Renderer
 
         private void drawBottomFlatTriangle<T>(ref TriangleEquations eqn, ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2) where T : IPixelShader
         {
+            var shader = (T)this.shader;
+
             float invslope1 = (v1.x - v0.x) / (v1.y - v0.y);
             float invslope2 = (v2.x - v0.x) / (v2.y - v0.y);
 
@@ -344,6 +360,8 @@ namespace Renderer
 
         private void drawTopFlatTriangle<T>(ref TriangleEquations eqn, ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2) where T : IPixelShader
         {
+            var shader = (T)this.shader;
+
             float invslope1 = (v2.x - v0.x) / (v2.y - v0.y);
             float invslope2 = (v2.x - v1.x) / (v2.y - v1.y);
 

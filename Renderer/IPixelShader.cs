@@ -114,11 +114,4 @@
             return pi;
         }
     };
-
-    internal class NullPixelShader : PixelShaderBase
-    {
-        public override void drawPixel(ref PixelData p)
-        {
-        }
-    };
 }
