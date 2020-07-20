@@ -1,0 +1,18 @@
+﻿[x] -rw-r--r-- 1 markus 197121  2435 Mrz 21 09:48 EdgeData.h
+[x] -rw-r--r-- 1 markus 197121  2311 Mrz 21 09:48 EdgeEquation.h
+[x] -rw-r--r-- 1 markus 197121  2502 Mrz 21 09:48 IRasterizer.h
+[x] -rw-r--r-- 1 markus 197121  1699 Mrz 21 09:48 LineClipper.cpp
+[x] -rw-r--r-- 1 markus 197121  1658 Mrz 21 09:48 LineClipper.h
+[x] -rw-r--r-- 1 markus 197121  2164 Mrz 21 09:48 ParameterEquation.h
+[x] -rw-r--r-- 1 markus 197121  3339 Mrz 21 09:48 PixelData.h
+[x] -rw-r--r-- 1 markus 197121  3928 Mrz 21 10:39 PixelShaderBase.h
+[x] -rw-r--r-- 1 markus 197121  2510 Mrz 21 09:48 PolyClipper.cpp
+[x] -rw-r--r-- 1 markus 197121  2556 Mrz 21 09:48 PolyClipper.h
+[x] -rw-r--r-- 1 markus 197121 13597 Mrz 21 10:21 Rasterizer.h
+[x] -rw-r--r-- 1 markus 197121  1164 Mrz 21 09:48 Renderer.h
+[x] -rw-r--r-- 1 markus 197121  2230 Mrz 21 09:48 TriangleEquations.h
+[x] -rw-r--r-- 1 markus 197121  1808 Mrz 21 09:48 VertexCache.h
+[x] -rw-r--r-- 1 markus 197121  1491 Mrz 21 09:48 VertexConfig.h
+[ ] -rw-r--r-- 1 markus 197121 10107 Mrz 21 09:48 VertexProcessor.cpp
+[ ] -rw-r--r-- 1 markus 197121  4009 Mrz 21 09:48 VertexProcessor.h
+[x] -rw-r--r-- 1 markus 197121  1704 Mrz 21 09:48 VertexShaderBase.h
