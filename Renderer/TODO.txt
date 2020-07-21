@@ -13,6 +13,6 @@
 [x] -rw-r--r-- 1 markus 197121  2230 Mrz 21 09:48 TriangleEquations.h
 [x] -rw-r--r-- 1 markus 197121  1808 Mrz 21 09:48 VertexCache.h
 [x] -rw-r--r-- 1 markus 197121  1491 Mrz 21 09:48 VertexConfig.h
-[ ] -rw-r--r-- 1 markus 197121 10107 Mrz 21 09:48 VertexProcessor.cpp
-[ ] -rw-r--r-- 1 markus 197121  4009 Mrz 21 09:48 VertexProcessor.h
+[x] -rw-r--r-- 1 markus 197121 10107 Mrz 21 09:48 VertexProcessor.cpp
+[x] -rw-r--r-- 1 markus 197121  4009 Mrz 21 09:48 VertexProcessor.h
 [x] -rw-r--r-- 1 markus 197121  1704 Mrz 21 09:48 VertexShaderBase.h

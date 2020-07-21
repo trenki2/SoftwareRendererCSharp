@@ -11,6 +11,6 @@ namespace Renderer
 
         /// Process a single vertex.
         /** Implement this in your own vertex shader. */
-        void processVertex(List<IVertexData> input, ref RasterizerVertex output);
+        unsafe void processVertex(void*[] input, ref RasterizerVertex output);
     };
 }

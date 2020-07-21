@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Renderer
 {
@@ -7,7 +8,7 @@ namespace Renderer
     {
         public int AttribCount => 0;
 
-        public void processVertex(List<IVertexData> input, ref RasterizerVertex output)
+        public unsafe void processVertex(void*[] input, ref RasterizerVertex output)
         {
         }
     }

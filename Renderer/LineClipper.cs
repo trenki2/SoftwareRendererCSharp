@@ -11,7 +11,7 @@ namespace Renderer
         public float t1;
         public bool fullyClipped;
 
-        public LineClipper(ref RasterizerVertex v0, ref RasterizerVertex v1)
+        public LineClipper(RasterizerVertex v0, RasterizerVertex v1)
         {
             m_v0 = v0;
             m_v1 = v1;
@@ -21,7 +21,7 @@ namespace Renderer
         }
 
         /// Clip the line segment to the plane given by the formula a * x + b * y + c * z + d * w.
-        private void clipToPlane(float a, float b, float c, float d)
+        public void clipToPlane(float a, float b, float c, float d)
         {
             if (fullyClipped)
                 return;

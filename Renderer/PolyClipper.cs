@@ -70,12 +70,12 @@ namespace Renderer
             m_indicesOut = temp;
         }
 
-        private List<int> indices()
+        public List<int> indices()
         {
             return m_indicesIn;
         }
 
-        private bool fullyClipped()
+        public bool fullyClipped()
         {
             return m_indicesIn.Count < 3;
         }
