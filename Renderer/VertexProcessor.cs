@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace Renderer
 {
@@ -15,14 +14,14 @@ namespace Renderer
         }
 
         /// Change the rasterizer where the primitives are sent.
-        private void setRasterizer(IRasterizer rasterizer)
+        public void setRasterizer(IRasterizer rasterizer)
         {
             m_rasterizer = rasterizer;
         }
 
         /// Set the viewport.
         /** Top-Left is (0, 0) */
-        private void setViewport(int x, int y, int width, int height)
+        public void setViewport(int x, int y, int width, int height)
         {
             m_viewport.x = x;
             m_viewport.y = y;
@@ -37,7 +36,7 @@ namespace Renderer
 
         /// Set the depth range.
         /** Default is (0, 1) */
-        private void setDepthRange(float n, float f)
+        public void setDepthRange(float n, float f)
         {
             m_depthRange.n = n;
             m_depthRange.f = f;
@@ -411,9 +410,9 @@ namespace Renderer
         private IRasterizer m_rasterizer;
 
         private unsafe delegate void ProcessVertexFunc(void*[] input, ref RasterizerVertex output);
-        ProcessVertexFunc m_processVertexFunc;
+        private ProcessVertexFunc m_processVertexFunc;
 
-	private int m_attribCount;
+        private int m_attribCount;
 
         private unsafe struct Attribute
         {
@@ -424,12 +423,11 @@ namespace Renderer
         private Attribute[] m_attributes = new Attribute[Constants.MaxVertexAttribs];
 
         // Some temporary variables for speed
-        private PolyClipper polyClipper;
-
-        private List<RasterizerVertex> m_verticesOut;
-        private List<int> m_indicesOut;
-        private List<ClipMask> m_clipMask;
-        private List<bool> m_alreadyProcessed;
+        private PolyClipper polyClipper = new PolyClipper();
+        private List<RasterizerVertex> m_verticesOut = new List<RasterizerVertex>();
+        private List<int> m_indicesOut = new List<int>();
+        private List<ClipMask> m_clipMask = new List<ClipMask>();
+        private List<bool> m_alreadyProcessed = new List<bool>();
 
         private VertexCache m_vCache = new VertexCache();
     }
