@@ -45,7 +45,7 @@ namespace Renderer
 
         /// Set the cull mode.
         /** Default is CullMode::CW to cull clockwise triangles. */
-        private void setCullMode(CullMode mode)
+        public void setCullMode(CullMode mode)
         {
             m_cullMode = mode;
         }
