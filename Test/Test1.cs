@@ -1,11 +1,7 @@
 ﻿using Renderer;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Test
 {
@@ -29,9 +25,9 @@ namespace Test
             public unsafe override void drawPixel(ref PixelData p)
             {
                 Bitmap.SetPixel(p.x, p.y, Color.FromArgb(
-                    255, 
-                    (int)(p.avar[0] * 255), 
-                    (int)(p.avar[1] * 255), 
+                    255,
+                    (int)(p.avar[0] * 255),
+                    (int)(p.avar[1] * 255),
                     (int)(p.avar[2] * 255))
                 );
             }
@@ -67,18 +63,13 @@ namespace Test
             var pixelShader = new PixelShader();
             var vertexShader = new VertexShader();
 
-            pixelShader.Bitmap = bitmap;
-
             r.setScissorRect(0, 0, 640, 480);
-            r.setPixelShader(pixelShader);
-
             v.setViewport(100, 100, 640 - 200, 480 - 200);
             v.setCullMode(CullMode.None);
-            v.setVertexShader(vertexShader);
 
             var indices = new List<int> { 0, 1, 2 };
             var vertices = new List<VertexData>();
-            
+
             var vertex = new VertexData();
             vertex.x = 0.0f;
             vertex.y = 0.5f;
@@ -106,7 +97,10 @@ namespace Test
             vertex.b = 1.0f;
             vertices.Add(vertex);
 
+            pixelShader.Bitmap = bitmap;
             vertexShader.VertexData = vertices;
+
+            r.setPixelShader(pixelShader);
             v.setVertexShader(vertexShader);
 
             v.drawElements(DrawMode.Triangle, 3, indices);
