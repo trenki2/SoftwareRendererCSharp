@@ -1,4 +1,6 @@
-﻿namespace Renderer
+﻿using System.Runtime.CompilerServices;
+
+namespace Renderer
 {
     /// PixelData passed to the pixel shader for display.
     public unsafe struct PixelData
@@ -20,6 +22,7 @@
         public fixed float pvarTemp[Constants.MaxPVars];
 
         // Initialize pixel data for the given pixel coordinates.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void init(ref TriangleEquations eqn, float x, float y, int aVarCount, int pVarCount, bool interpolateZ, bool interpolateW)
         {
             if (interpolateZ)
@@ -42,6 +45,7 @@
         }
 
         // Step all the pixel data in the x direction.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void stepX(ref TriangleEquations eqn, int aVarCount, int pVarCount, bool interpolateZ, bool interpolateW)
         {
             if (interpolateZ)
@@ -64,6 +68,7 @@
         }
 
         // Step all the pixel data in the y direction.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void stepY(ref TriangleEquations eqn, int aVarCount, int pVarCount, bool interpolateZ, bool interpolateW)
         {
             if (interpolateZ)

@@ -1,4 +1,6 @@
-﻿namespace Renderer
+﻿using System.Runtime.CompilerServices;
+
+namespace Renderer
 {
     public struct ParameterEquation
     {
@@ -21,30 +23,35 @@
         }
 
         // Evaluate the parameter equation for the given point.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float evaluate(float x, float y)
         {
             return a * x + b * y + c;
         }
 
         // Step parameter value v in x direction.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float stepX(float v)
         {
             return v + a;
         }
 
         // Step parameter value v in x direction.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float stepX(float v, float stepSize)
         {
             return v + a * stepSize;
         }
 
         // Step parameter value v in y direction.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float stepY(float v)
         {
             return v + b;
         }
 
         // Step parameter value v in y direction.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float stepY(float v, float stepSize)
         {
             return v + b * stepSize;
