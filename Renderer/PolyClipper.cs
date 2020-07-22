@@ -5,7 +5,8 @@ namespace Renderer
 {
     public class PolyClipper
     {
-        private int m_attribCount;
+        private int m_avarCount;
+        private int m_pvarCount;
         private List<int> m_indicesIn;
         private List<int> m_indicesOut;
         private List<RasterizerVertex> m_vertices;
@@ -16,9 +17,10 @@ namespace Renderer
             m_indicesOut = new List<int>();
         }
 
-        public void init(List<RasterizerVertex> vertices, int i1, int i2, int i3, int attribCount)
+        public void init(List<RasterizerVertex> vertices, int i1, int i2, int i3, int avarCount, int pvarCount)
         {
-            m_attribCount = attribCount;
+            m_avarCount = avarCount;
+            m_pvarCount = pvarCount;
             m_vertices = vertices;
 
             m_indicesIn.Clear();
@@ -56,7 +58,7 @@ namespace Renderer
                 {
                     float t = dp < 0 ? dpPrev / (dpPrev - dp) : -dpPrev / (dp - dpPrev);
 
-                    RasterizerVertex vOut = Helper.interpolateVertex(m_vertices[idxPrev], m_vertices[idx], t, m_attribCount);
+                    RasterizerVertex vOut = Helper.interpolateVertex(m_vertices[idxPrev], m_vertices[idx], t, m_avarCount, m_pvarCount);
                     m_vertices.Add(vOut);
                     m_indicesOut.Add(m_vertices.Count - 1);
                 }

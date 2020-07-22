@@ -39,7 +39,8 @@ namespace Test
 
         private class VertexShader : IVertexShader
         {
-            public int AttribCount => 3;
+            public int AVarCount => 3;
+            public int PVarCount => 0;
 
             public List<VertexData> VertexData { get; set; }
 

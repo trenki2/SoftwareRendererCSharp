@@ -6,7 +6,8 @@ namespace Renderer
     ///  NullVertexShader does nothing.
     public class NullVertexShader : IVertexShader
     {
-        public int AttribCount => 0;
+        public int AVarCount => 0;
+        public int PVarCount => 0;
 
         public void processVertex(int index, ref RasterizerVertex output)
         {

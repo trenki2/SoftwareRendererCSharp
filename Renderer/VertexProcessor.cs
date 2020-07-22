@@ -205,14 +205,14 @@ namespace Renderer
 
                 if (m_clipMask[index0] > 0)
                 {
-                    RasterizerVertex newV = Helper.interpolateVertex(v0, v1, lineClipper.t0, m_shader.AttribCount);
+                    RasterizerVertex newV = Helper.interpolateVertex(v0, v1, lineClipper.t0, m_shader.AVarCount, m_shader.PVarCount);
                     m_verticesOut.Add(newV);
                     m_indicesOut[i] = m_verticesOut.Count - 1;
                 }
 
                 if (m_clipMask[index1] > 0)
                 {
-                    RasterizerVertex newV = Helper.interpolateVertex(v0, v1, lineClipper.t1, m_shader.AttribCount);
+                    RasterizerVertex newV = Helper.interpolateVertex(v0, v1, lineClipper.t1, m_shader.AVarCount, m_shader.PVarCount);
                     m_verticesOut.Add(newV);
                     m_indicesOut[i + 1] = m_verticesOut.Count - 1;
                 }
@@ -238,7 +238,7 @@ namespace Renderer
 
                 ClipMask clipMask = m_clipMask[i0] | m_clipMask[i1] | m_clipMask[i2];
 
-                polyClipper.init(m_verticesOut, i0, i1, i2, m_shader.AttribCount);
+                polyClipper.init(m_verticesOut, i0, i1, i2, m_shader.AVarCount, m_shader.PVarCount);
 
                 if ((clipMask & ClipMask.PosX) == ClipMask.PosX) polyClipper.clipToPlane(-1, 0, 0, 1);
                 if ((clipMask & ClipMask.NegX) == ClipMask.NegX) polyClipper.clipToPlane(1, 0, 0, 1);
