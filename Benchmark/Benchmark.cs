@@ -36,7 +36,7 @@ namespace Benchmark
                 => PixelShaderHelper<PixelShader>.drawSpan(ref this, ref eqn, x, y, x2);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public unsafe void drawPixel(ref PixelData p)
+            public void drawPixel(ref PixelData p)
             {
                 Buffer[p.x + Width * p.y] = 1;
             }
