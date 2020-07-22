@@ -13,9 +13,7 @@ namespace Renderer
         private RasterMode rasterMode;
 
         private delegate void TriangleFunc(ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2);
-
         private delegate void LineFunc(ref RasterizerVertex v0, ref RasterizerVertex vv1);
-
         private delegate void PointFunc(ref RasterizerVertex v);
 
         private TriangleFunc m_triangleFunc;
@@ -112,7 +110,7 @@ namespace Renderer
             return (x >= m_minX && x < m_maxX && y >= m_minY && y < m_maxY);
         }
 
-        private class RasterizerImpl<T>  where T : IPixelShader
+        private class RasterizerImpl<T> where T : IPixelShader
         {
             private T shader;
             private Rasterizer rasterizer;
