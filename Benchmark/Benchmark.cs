@@ -23,20 +23,14 @@ namespace Benchmark
                 AVarCount = 3;
             }
 
-            public int[][] Screen { get; set; }
-            public Bitmap Bitmap { get; set; }
+            public int[] Buffer { get; set; }
+            public int Width { get; set; }
+            public int Height { get; set; }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public unsafe override void drawPixel(ref PixelData p)
             {
-                Screen[p.x][p.y] = 1;
-
-                //Bitmap.SetPixel(p.x, p.y, Color.FromArgb(
-                //    255,
-                //    (int)(p.avar[0] * 255),
-                //    (int)(p.avar[1] * 255),
-                //    (int)(p.avar[2] * 255))
-                //);
+                Buffer[p.x + Width * p.y] = 1;
             }
         }
 
@@ -63,10 +57,6 @@ namespace Benchmark
 
         public void Run()
         {
-            var screen = new int[640][];
-            for (int i = 0; i < 640; i++)
-                screen[i] = new int[480];
-
             var r = new Rasterizer();
             var v = new VertexProcessor(r);
 
@@ -107,7 +97,9 @@ namespace Benchmark
                 indices.Add(offset + 2);
             }
 
-            pixelShader.Screen = screen;
+            pixelShader.Buffer = new int[640 * 480];
+            pixelShader.Width = 640;
+            pixelShader.Height = 480;
             vertexShader.VertexData = vertices;
 
             r.setPixelShader(pixelShader);
