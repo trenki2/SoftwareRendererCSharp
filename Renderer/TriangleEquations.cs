@@ -15,8 +15,6 @@
 
         public TriangleEquations(ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2, int aVarCount, int pVarCount)
         {
-            // TODO: Remove init method and make it a constructor
-
             e0 = new EdgeEquation();
             e1 = new EdgeEquation();
             e2 = new EdgeEquation();
