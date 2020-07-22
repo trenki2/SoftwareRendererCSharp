@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace Test
 {
@@ -28,6 +29,7 @@ namespace Test
                 PVarCount = 2;
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public unsafe override void drawPixel(ref PixelData p)
             {
                 // TODO: check and update depth buffer with p.z;
@@ -46,6 +48,7 @@ namespace Test
             public List<VertexData> Data { get; set; }
             public Matrix4x4 ModelViewProjectionMatrix { get; set; }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public unsafe void processVertex(int index, ref RasterizerVertex o)
             {
                 var v = Data[index];

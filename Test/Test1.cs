@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.CompilerServices;
 
 namespace Test
 {
@@ -22,6 +23,7 @@ namespace Test
 
             public Bitmap Bitmap { get; set; }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public unsafe override void drawPixel(ref PixelData p)
             {
                 Bitmap.SetPixel(p.x, p.y, Color.FromArgb(
@@ -40,6 +42,7 @@ namespace Test
 
             public List<VertexData> VertexData { get; set; }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public unsafe void processVertex(int index, ref RasterizerVertex output)
             {
                 var data = VertexData[index];
