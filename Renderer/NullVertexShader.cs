@@ -8,7 +8,7 @@ namespace Renderer
     {
         public int AttribCount => 0;
 
-        public unsafe void processVertex(void*[] input, ref RasterizerVertex output)
+        public void processVertex(int index, ref RasterizerVertex output)
         {
         }
     }

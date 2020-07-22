@@ -1,16 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Renderer
 {
     /// Process vertices and pass them to a rasterizer.
     public class VertexProcessor
     {
+        private struct Viewport
+        {
+            public int x, y, width, height;
+            public float px, py, ox, oy;
+        }
+
+        private struct DepthRange
+        {
+            public float n;
+            public float f;
+        }
+
+        private Viewport m_viewport;
+        private DepthRange m_depthRange;
+
+        private CullMode m_cullMode;
+        private IRasterizer m_rasterizer;
+
+        private PolyClipper polyClipper = new PolyClipper();
+        private List<RasterizerVertex> m_verticesOut = new List<RasterizerVertex>();
+        private List<int> m_indicesOut = new List<int>();
+        private List<ClipMask> m_clipMask = new List<ClipMask>();
+        private List<bool> m_alreadyProcessed = new List<bool>();
+        private VertexCache m_vCache = new VertexCache();
+
+        private IVertexShader m_shader;
+
         /// Constructor.
         public VertexProcessor(IRasterizer rasterizer)
         {
             m_rasterizer = rasterizer;
+            m_shader = new NullVertexShader();
         }
 
         /// Change the rasterizer where the primitives are sent.
@@ -50,23 +77,13 @@ namespace Renderer
         }
 
         /// Set the vertex shader.
-        public unsafe void setVertexShader(IVertexShader shader)
+        public void setVertexShader(IVertexShader shader)
         {
-            Debug.Assert(shader.AttribCount <= Constants.MaxVertexAttribs);
-            m_attribCount = shader.AttribCount;
-            m_processVertexFunc = shader.processVertex;
-        }
-
-        /// Set a vertex attrib pointer.
-        public unsafe void setVertexAttribPointer(int index, int stride, void* buffer)
-        {
-            Debug.Assert(index < Constants.MaxVertexAttribs);
-            m_attributes[index].buffer = buffer;
-            m_attributes[index].stride = stride;
+            m_shader = shader;
         }
 
         /// Draw a number of points, lines or triangles.
-        public unsafe void drawElements(DrawMode mode, int count, List<int> indices)
+        public void drawElements(DrawMode mode, int count, List<int> indices)
         {
             m_verticesOut.Clear();
             m_indicesOut.Clear();
@@ -85,18 +102,14 @@ namespace Renderer
                 }
                 else
                 {
-                    void*[] vIn = new void*[m_attribCount];
-                    initVertexInput(vIn, index);
-
-                    int outputIndex2 = m_verticesOut.Count;
-
                     RasterizerVertex vOut = new RasterizerVertex();
-                    processVertex(vIn, ref vOut);
+                    processVertex(index, ref vOut);
 
-                    m_indicesOut.Add(outputIndex2);
+                    outputIndex = m_verticesOut.Count;
+                    m_indicesOut.Add(outputIndex);
                     m_verticesOut.Add(vOut);
 
-                    m_vCache.set(index, outputIndex2);
+                    m_vCache.set(index, outputIndex);
                 }
 
                 if (primitiveCount(mode) >= 1024)
@@ -134,21 +147,9 @@ namespace Renderer
             return mask;
         }
 
-        private unsafe void* attribPointer(int attribIndex, int elementIndex)
+        private void processVertex(int index, ref RasterizerVertex output)
         {
-            ref Attribute attrib = ref m_attributes[attribIndex];
-            return (char*)attrib.buffer + attrib.stride * elementIndex;
-        }
-
-        private unsafe void processVertex(void*[] input, ref RasterizerVertex output)
-        {
-            m_processVertexFunc(input, ref output);
-        }
-
-        private unsafe void initVertexInput(void*[] input, int index)
-        {
-            for (int i = 0; i < m_attribCount; ++i)
-                input[i] = attribPointer(i, index);
+            m_shader.processVertex(index, ref output);
         }
 
         private void clipPoints()
@@ -166,6 +167,7 @@ namespace Renderer
                     m_indicesOut[i] = -1;
             }
         }
+
         private void clipLines()
         {
             m_clipMask.Clear();
@@ -203,19 +205,20 @@ namespace Renderer
 
                 if (m_clipMask[index0] > 0)
                 {
-                    RasterizerVertex newV = Helper.interpolateVertex(v0, v1, lineClipper.t0, m_attribCount);
+                    RasterizerVertex newV = Helper.interpolateVertex(v0, v1, lineClipper.t0, m_shader.AttribCount);
                     m_verticesOut.Add(newV);
                     m_indicesOut[i] = m_verticesOut.Count - 1;
                 }
 
                 if (m_clipMask[index1] > 0)
                 {
-                    RasterizerVertex newV = Helper.interpolateVertex(v0, v1, lineClipper.t1, m_attribCount);
+                    RasterizerVertex newV = Helper.interpolateVertex(v0, v1, lineClipper.t1, m_shader.AttribCount);
                     m_verticesOut.Add(newV);
                     m_indicesOut[i + 1] = m_verticesOut.Count - 1;
                 }
             }
         }
+
         private void clipTriangles()
         {
             m_clipMask.Clear();
@@ -235,7 +238,7 @@ namespace Renderer
 
                 ClipMask clipMask = m_clipMask[i0] | m_clipMask[i1] | m_clipMask[i2];
 
-                polyClipper.init(m_verticesOut, i0, i1, i2, m_attribCount);
+                polyClipper.init(m_verticesOut, i0, i1, i2, m_shader.AttribCount);
 
                 if ((clipMask & ClipMask.PosX) == ClipMask.PosX) polyClipper.clipToPlane(-1, 0, 0, 1);
                 if ((clipMask & ClipMask.NegX) == ClipMask.NegX) polyClipper.clipToPlane(1, 0, 0, 1);
@@ -390,45 +393,5 @@ namespace Renderer
                 m_alreadyProcessed[index] = true;
             }
         }
-
-        private struct Viewport
-        {
-            public int x, y, width, height;
-            public float px, py, ox, oy;
-        }
-
-        private struct DepthRange
-        {
-            public float n;
-            public float f;
-        }
-
-        private Viewport m_viewport;
-        private DepthRange m_depthRange;
-
-        private CullMode m_cullMode;
-        private IRasterizer m_rasterizer;
-
-        private unsafe delegate void ProcessVertexFunc(void*[] input, ref RasterizerVertex output);
-        private ProcessVertexFunc m_processVertexFunc;
-
-        private int m_attribCount;
-
-        private unsafe struct Attribute
-        {
-            public void* buffer;
-            public int stride;
-        }
-
-        private Attribute[] m_attributes = new Attribute[Constants.MaxVertexAttribs];
-
-        // Some temporary variables for speed
-        private PolyClipper polyClipper = new PolyClipper();
-        private List<RasterizerVertex> m_verticesOut = new List<RasterizerVertex>();
-        private List<int> m_indicesOut = new List<int>();
-        private List<ClipMask> m_clipMask = new List<ClipMask>();
-        private List<bool> m_alreadyProcessed = new List<bool>();
-
-        private VertexCache m_vCache = new VertexCache();
     }
 }
