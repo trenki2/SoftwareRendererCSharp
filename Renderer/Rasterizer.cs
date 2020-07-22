@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Renderer
 {
-    internal class Rasterizer
+    public class Rasterizer : IRasterizer
     {
         private int m_minX;
         private int m_maxX;
@@ -45,7 +45,7 @@ namespace Renderer
         }
 
         /// Set the pixel shader.
-        private void setPixelShader<T>(T shader) where T : IPixelShader
+        public void setPixelShader<T>(T shader) where T : IPixelShader
         {
             var impl = new RasterizerImpl<T>(shader, this);
             m_triangleFunc = impl.drawTriangleModeTemplate;
