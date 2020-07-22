@@ -45,7 +45,7 @@ namespace Renderer
         }
 
         /// Set the pixel shader.
-        public void setPixelShader<T>(T shader) where T : IPixelShader
+        public void setPixelShader<T>(T shader) where T : struct, IPixelShader
         {
             var impl = new RasterizerImpl<T>(shader, this);
             m_triangleFunc = impl.drawTriangleModeTemplate;

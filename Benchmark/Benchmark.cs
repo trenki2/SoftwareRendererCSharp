@@ -16,19 +16,27 @@ namespace Benchmark
             public float r, g, b;
         }
 
-        private class PixelShader : PixelShaderBase
+        private struct PixelShader : IPixelShader
         {
-            public PixelShader()
-            {
-                AVarCount = 3;
-            }
+            public bool InterpolateZ => false;
+            public bool InterpolateW => false;
+            public int AVarCount => 3;
+            public int PVarCount => 0;
 
             public int[] Buffer { get; set; }
             public int Width { get; set; }
             public int Height { get; set; }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public unsafe override void drawPixel(ref PixelData p)
+            public void drawBlock(ref TriangleEquations eqn, int x, int y, bool testEdges)
+                => PixelShaderHelper<PixelShader>.drawBlock(ref this, ref eqn, x, y, testEdges);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void drawSpan(ref TriangleEquations eqn, int x, int y, int x2)
+                => PixelShaderHelper<PixelShader>.drawSpan(ref this, ref eqn, x, y, x2);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public unsafe void drawPixel(ref PixelData p)
             {
                 Buffer[p.x + Width * p.y] = 1;
             }

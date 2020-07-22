@@ -14,17 +14,23 @@ namespace Test
             public float r, g, b;
         }
 
-        private class PixelShader : PixelShaderBase
+        private struct PixelShader : IPixelShader
         {
-            public PixelShader()
-            {
-                AVarCount = 3;
-            }
+            public bool InterpolateZ => false;
+            public bool InterpolateW => false;
+            public int AVarCount => 3;
+            public int PVarCount => 0;
 
             public Bitmap Bitmap { get; set; }
 
+            public void drawBlock(ref TriangleEquations eqn, int x, int y, bool testEdges)
+                => PixelShaderHelper<PixelShader>.drawBlock(ref this, ref eqn, x, y, testEdges);
+
+            public void drawSpan(ref TriangleEquations eqn, int x, int y, int x2)
+                => PixelShaderHelper<PixelShader>.drawSpan(ref this, ref eqn, x, y, x2);
+
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public unsafe override void drawPixel(ref PixelData p)
+            public unsafe void drawPixel(ref PixelData p)
             {
                 Bitmap.SetPixel(p.x, p.y, Color.FromArgb(
                     255,

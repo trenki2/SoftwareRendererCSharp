@@ -19,18 +19,24 @@ namespace Test
             public Vector2 texcoord;
         }
 
-        private class PixelShader : PixelShaderBase
+        private struct PixelShader : IPixelShader
         {
+            public bool InterpolateZ => false;
+            public bool InterpolateW => false;
+            public int AVarCount => 2;
+            public int PVarCount => 0;
+
             public Bitmap Screen { get; set; }
             public Bitmap Texture { get; set; }
 
-            public PixelShader()
-            {
-                PVarCount = 2;
-            }
+            public void drawBlock(ref TriangleEquations eqn, int x, int y, bool testEdges)
+                => PixelShaderHelper<PixelShader>.drawBlock(ref this, ref eqn, x, y, testEdges);
+
+            public void drawSpan(ref TriangleEquations eqn, int x, int y, int x2)
+                => PixelShaderHelper<PixelShader>.drawSpan(ref this, ref eqn, x, y, x2);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public unsafe override void drawPixel(ref PixelData p)
+            public unsafe void drawPixel(ref PixelData p)
             {
                 // TODO: check and update depth buffer with p.z;
 
