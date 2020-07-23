@@ -39,6 +39,8 @@ public struct PixelShader : IPixelShader
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void drawPixel(ref PixelData p)
   {
+    // This is for demonstration only. It is slow. In real code you 
+    // would have to write to a color buffer directly.
     Screen.SetPixel(p.x, p.y, Color.FromArgb(
       255,
       (int)(p.avar[0] * 255),
