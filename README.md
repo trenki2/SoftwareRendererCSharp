@@ -1,7 +1,7 @@
-# C# Software Renderer/Rasterizer ported from my C++ code
+# C# Software Renderer/Rasterizer
 
 This project implements a C# software renderer/rasterizer with vertex- and
-pixel shader support.
+pixel shader support. It is a direct source code port from my C++ Software Renderer/Rasterizer.
 
 For best performance you should compile for x64. Still the C# code is much slower than the C++ code.
 
