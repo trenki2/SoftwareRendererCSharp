@@ -23,8 +23,8 @@ namespace Test
         {
             public bool InterpolateZ => false;
             public bool InterpolateW => false;
-            public int AVarCount => 2;
-            public int PVarCount => 0;
+            public int AVarCount => 0;
+            public int PVarCount => 2;
 
             public Bitmap Screen { get; set; }
             public Bitmap Texture { get; set; }
