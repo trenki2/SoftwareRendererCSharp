@@ -5,9 +5,6 @@
         /// Rendering Block size.
         public const int BlockSize = 8;
 
-        /// Maximum supported number of vertex attributes.
-        public const int MaxVertexAttribs = 8;
-
         /// Maximum affine variables used for interpolation across the triangle.
         public const int MaxAVars = 16;
 
