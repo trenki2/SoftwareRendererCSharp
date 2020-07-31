@@ -23,69 +23,69 @@ namespace Renderer
 
         // Initialize pixel data for the given pixel coordinates.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void init(ref TriangleEquations eqn, float x, float y, int aVarCount, int pVarCount, bool interpolateZ, bool interpolateW)
+        public void Init(ref TriangleEquations eqn, float x, float y, int aVarCount, int pVarCount, bool interpolateZ, bool interpolateW)
         {
             if (interpolateZ)
-                z = eqn.z.evaluate(x, y);
+                z = eqn.z.Evaluate(x, y);
 
             if (interpolateW || pVarCount > 0)
             {
-                invw = eqn.invw.evaluate(x, y);
+                invw = eqn.invw.Evaluate(x, y);
                 w = 1.0f / invw;
             }
 
             for (int i = 0; i < aVarCount; ++i)
-                avar[i] = eqn.avar[i].evaluate(x, y);
+                avar[i] = eqn.avar[i].Evaluate(x, y);
 
             for (int i = 0; i < pVarCount; ++i)
             {
-                pvarTemp[i] = eqn.pvar[i].evaluate(x, y);
+                pvarTemp[i] = eqn.pvar[i].Evaluate(x, y);
                 pvar[i] = pvarTemp[i] * w;
             }
         }
 
         // Step all the pixel data in the x direction.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void stepX(ref TriangleEquations eqn, int aVarCount, int pVarCount, bool interpolateZ, bool interpolateW)
+        public void StepX(ref TriangleEquations eqn, int aVarCount, int pVarCount, bool interpolateZ, bool interpolateW)
         {
             if (interpolateZ)
-                z = eqn.z.stepX(z);
+                z = eqn.z.StepX(z);
 
             if (interpolateW || pVarCount > 0)
             {
-                invw = eqn.invw.stepX(invw);
+                invw = eqn.invw.StepX(invw);
                 w = 1.0f / invw;
             }
 
             for (int i = 0; i < aVarCount; ++i)
-                avar[i] = eqn.avar[i].stepX(avar[i]);
+                avar[i] = eqn.avar[i].StepX(avar[i]);
 
             for (int i = 0; i < pVarCount; ++i)
             {
-                pvarTemp[i] = eqn.pvar[i].stepX(pvarTemp[i]);
+                pvarTemp[i] = eqn.pvar[i].StepX(pvarTemp[i]);
                 pvar[i] = pvarTemp[i] * w;
             }
         }
 
         // Step all the pixel data in the y direction.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void stepY(ref TriangleEquations eqn, int aVarCount, int pVarCount, bool interpolateZ, bool interpolateW)
+        public void StepY(ref TriangleEquations eqn, int aVarCount, int pVarCount, bool interpolateZ, bool interpolateW)
         {
             if (interpolateZ)
-                z = eqn.z.stepY(z);
+                z = eqn.z.StepY(z);
 
             if (interpolateW || pVarCount > 0)
             {
-                invw = eqn.invw.stepY(invw);
+                invw = eqn.invw.StepY(invw);
                 w = 1.0f / invw;
             }
 
             for (int i = 0; i < aVarCount; ++i)
-                avar[i] = eqn.avar[i].stepY(avar[i]);
+                avar[i] = eqn.avar[i].StepY(avar[i]);
 
             for (int i = 0; i < pVarCount; ++i)
             {
-                pvarTemp[i] = eqn.pvar[i].stepY(pvarTemp[i]);
+                pvarTemp[i] = eqn.pvar[i].StepY(pvarTemp[i]);
                 pvar[i] = pvarTemp[i] * w;
             }
         }

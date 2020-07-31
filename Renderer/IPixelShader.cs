@@ -15,13 +15,13 @@
         int PVarCount { get; }
 
         /// Draw a block of size BlockSize * BlockSize.
-        void drawBlock(ref TriangleEquations eqn, int x, int y, bool testEdges);
+        void DrawBlock(ref TriangleEquations eqn, int x, int y, bool testEdges);
         
         /// Draw a span from left to right.
-        void drawSpan(ref TriangleEquations eqn, int x, int y, int x2);
+        void DrawSpan(ref TriangleEquations eqn, int x, int y, int x2);
 
         /// This is called per pixel.
         /** Implement this in your derived class to display single pixels. */
-        void drawPixel(ref PixelData p);
+        void DrawPixel(ref PixelData p);
     }
 }

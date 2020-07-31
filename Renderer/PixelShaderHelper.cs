@@ -6,13 +6,13 @@ namespace Renderer
     public static class PixelShaderHelper<T> where T : IPixelShader
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void drawBlock(ref T shader, ref TriangleEquations eqn, int x, int y, bool TestEdges)
+        public static void DrawBlock(ref T shader, ref TriangleEquations eqn, int x, int y, bool TestEdges)
         {
             float xf = x + 0.5f;
             float yf = y + 0.5f;
 
             PixelData po = new PixelData();
-            po.init(ref eqn, xf, yf, shader.AVarCount, shader.PVarCount, shader.InterpolateZ, shader.InterpolateW);
+            po.Init(ref eqn, xf, yf, shader.AVarCount, shader.PVarCount, shader.InterpolateZ, shader.InterpolateW);
 
             EdgeData eo = new EdgeData();
             if (TestEdges)
@@ -20,7 +20,7 @@ namespace Renderer
 
             for (int yy = y; yy < y + Constants.BlockSize; yy++)
             {
-                PixelData pi = copyPixelData(ref shader, ref po);
+                PixelData pi = CopyPixelData(ref shader, ref po);
 
                 EdgeData ei = new EdgeData();
                 if (TestEdges)
@@ -32,43 +32,43 @@ namespace Renderer
                     {
                         pi.x = xx;
                         pi.y = yy;
-                        shader.drawPixel(ref pi);
+                        shader.DrawPixel(ref pi);
                     }
 
-                    pi.stepX(ref eqn, shader.AVarCount, shader.PVarCount, shader.InterpolateZ, shader.InterpolateW);
+                    pi.StepX(ref eqn, shader.AVarCount, shader.PVarCount, shader.InterpolateZ, shader.InterpolateW);
                     if (TestEdges)
                         ei.stepX(ref eqn);
                 }
 
-                po.stepY(ref eqn, shader.AVarCount, shader.PVarCount, shader.InterpolateZ, shader.InterpolateW);
+                po.StepY(ref eqn, shader.AVarCount, shader.PVarCount, shader.InterpolateZ, shader.InterpolateW);
                 if (TestEdges)
                     eo.stepY(ref eqn);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void drawSpan(ref T shader, ref TriangleEquations eqn, int x, int y, int x2)
+        public static void DrawSpan(ref T shader, ref TriangleEquations eqn, int x, int y, int x2)
         {
             float xf = x + 0.5f;
             float yf = y + 0.5f;
 
             PixelData p = new PixelData();
             p.y = y;
-            p.init(ref eqn, xf, yf, shader.AVarCount, shader.PVarCount, shader.InterpolateZ, shader.InterpolateW);
+            p.Init(ref eqn, xf, yf, shader.AVarCount, shader.PVarCount, shader.InterpolateZ, shader.InterpolateW);
 
             while (x < x2)
             {
                 p.x = x;
-                shader.drawPixel(ref p);
-                p.stepX(ref eqn, shader.AVarCount, shader.PVarCount, shader.InterpolateZ, shader.InterpolateW);
+                shader.DrawPixel(ref p);
+                p.StepX(ref eqn, shader.AVarCount, shader.PVarCount, shader.InterpolateZ, shader.InterpolateW);
                 x++;
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe PixelData copyPixelData(ref T shader, ref PixelData po)
+        public static unsafe PixelData CopyPixelData(ref T shader, ref PixelData po)
         {
-            PixelData pi = new PixelData(); ;
+            PixelData pi = new PixelData();
             if (shader.InterpolateZ) pi.z = po.z;
             if (shader.InterpolateW) { pi.w = po.w; pi.invw = po.invw; }
             for (int i = 0; i < shader.AVarCount; ++i)

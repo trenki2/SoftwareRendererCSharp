@@ -8,7 +8,7 @@ namespace Renderer
         public float b;
         public float c;
 
-        public void init(
+        public void Init(
             float p0,
             float p1,
             float p2,
@@ -24,35 +24,35 @@ namespace Renderer
 
         // Evaluate the parameter equation for the given point.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float evaluate(float x, float y)
+        public float Evaluate(float x, float y)
         {
             return a * x + b * y + c;
         }
 
         // Step parameter value v in x direction.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float stepX(float v)
+        public float StepX(float v)
         {
             return v + a;
         }
 
         // Step parameter value v in x direction.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float stepX(float v, float stepSize)
+        public float StepX(float v, float stepSize)
         {
             return v + a * stepSize;
         }
 
         // Step parameter value v in y direction.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float stepY(float v)
+        public float StepY(float v)
         {
             return v + b;
         }
 
         // Step parameter value v in y direction.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float stepY(float v, float stepSize)
+        public float StepY(float v, float stepSize)
         {
             return v + b * stepSize;
         }

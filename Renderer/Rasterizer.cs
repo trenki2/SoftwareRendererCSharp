@@ -22,19 +22,19 @@ namespace Renderer
 
         public Rasterizer()
         {
-            setRasterMode(RasterMode.Span);
-            setScissorRect(0, 0, 0, 0);
-            setPixelShader(new NullPixelShader());
+            SetRasterMode(RasterMode.Span);
+            SetScissorRect(0, 0, 0, 0);
+            SetPixelShader(new NullPixelShader());
         }
 
         /// Set the raster mode. The default is RasterMode::Span.
-        public void setRasterMode(RasterMode mode)
+        public void SetRasterMode(RasterMode mode)
         {
             rasterMode = mode;
         }
 
         /// Set the scissor rectangle.
-        public void setScissorRect(int x, int y, int width, int height)
+        public void SetScissorRect(int x, int y, int width, int height)
         {
             m_minX = x;
             m_minY = y;
@@ -43,44 +43,44 @@ namespace Renderer
         }
 
         /// Set the pixel shader.
-        public void setPixelShader<T>(T shader) where T : struct, IPixelShader
+        public void SetPixelShader<T>(T shader) where T : struct, IPixelShader
         {
             var impl = new RasterizerImpl<T>(shader, this);
-            m_triangleFunc = impl.drawTriangleModeTemplate;
-            m_lineFunc = impl.drawLineTemplate;
-            m_pointFunc = impl.drawPointTemplate;
+            m_triangleFunc = impl.DrawTriangleModeTemplate;
+            m_lineFunc = impl.DrawLineTemplate;
+            m_pointFunc = impl.DrawPointTemplate;
         }
 
         /// Draw a single point.
-        public void drawPoint(ref RasterizerVertex v)
+        public void DrawPoint(ref RasterizerVertex v)
         {
             m_pointFunc(ref v);
         }
 
         /// Draw a single line.
-        public void drawLine(ref RasterizerVertex v0, ref RasterizerVertex v1)
+        public void DrawLine(ref RasterizerVertex v0, ref RasterizerVertex v1)
         {
             m_lineFunc(ref v0, ref v1);
         }
 
         /// Draw a single triangle.
-        public void drawTriangle(ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2)
+        public void DrawTriangle(ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2)
         {
             m_triangleFunc(ref v0, ref v1, ref v2);
         }
 
-        public void drawPointList(List<RasterizerVertex> vertices, List<int> indices, int indexCount)
+        public void DrawPointList(List<RasterizerVertex> vertices, List<int> indices, int indexCount)
         {
             for (int i = 0; i < indexCount; ++i)
             {
                 if (indices[i] == -1)
                     continue;
                 RasterizerVertex v = vertices[indices[i]];
-                drawPoint(ref v);
+                DrawPoint(ref v);
             }
         }
 
-        public void drawLineList(List<RasterizerVertex> vertices, List<int> indices, int indexCount)
+        public void DrawLineList(List<RasterizerVertex> vertices, List<int> indices, int indexCount)
         {
             for (int i = 0; i + 2 <= indexCount; i += 2)
             {
@@ -88,11 +88,11 @@ namespace Renderer
                     continue;
                 RasterizerVertex v0 = vertices[indices[i]];
                 RasterizerVertex v1 = vertices[indices[i + 1]];
-                drawLine(ref v0, ref v1);
+                DrawLine(ref v0, ref v1);
             }
         }
 
-        public void drawTriangleList(List<RasterizerVertex> vertices, List<int> indices, int indexCount)
+        public void DrawTriangleList(List<RasterizerVertex> vertices, List<int> indices, int indexCount)
         {
             for (int i = 0; i + 3 <= indexCount; i += 3)
             {
@@ -101,19 +101,19 @@ namespace Renderer
                 RasterizerVertex v0 = vertices[indices[i]];
                 RasterizerVertex v1 = vertices[indices[i + 1]];
                 RasterizerVertex v2 = vertices[indices[i + 2]];
-                drawTriangle(ref v0, ref v1, ref v2);
+                DrawTriangle(ref v0, ref v1, ref v2);
             }
         }
 
-        public bool scissorTest(float x, float y)
+        public bool ScissorTest(float x, float y)
         {
             return (x >= m_minX && x < m_maxX && y >= m_minY && y < m_maxY);
         }
 
         private class RasterizerImpl<T> where T : IPixelShader
         {
-            private T shader;
-            private Rasterizer rasterizer;
+            private readonly T shader;
+            private readonly Rasterizer rasterizer;
 
             public RasterizerImpl(T shader, Rasterizer rasterizer)
             {
@@ -121,7 +121,7 @@ namespace Renderer
                 this.rasterizer = rasterizer;
             }
 
-            public unsafe PixelData pixelDataFromVertex(ref RasterizerVertex v)
+            public unsafe PixelData PixelDataFromVertex(ref RasterizerVertex v)
             {
                 PixelData p = new PixelData();
                 p.x = (int)v.x;
@@ -135,37 +135,37 @@ namespace Renderer
                 return p;
             }
 
-            public void drawPointTemplate(ref RasterizerVertex v)
+            public void DrawPointTemplate(ref RasterizerVertex v)
             {
                 // Check scissor rect
-                if (!rasterizer.scissorTest(v.x, v.y))
+                if (!rasterizer.ScissorTest(v.x, v.y))
                     return;
 
-                PixelData p = pixelDataFromVertex(ref v);
-                shader.drawPixel(ref p);
+                PixelData p = PixelDataFromVertex(ref v);
+                shader.DrawPixel(ref p);
             }
 
-            public void drawLineTemplate(ref RasterizerVertex v0, ref RasterizerVertex v1)
+            public void DrawLineTemplate(ref RasterizerVertex v0, ref RasterizerVertex v1)
             {
                 int adx = Math.Abs((int)v1.x - (int)v0.x);
                 int ady = Math.Abs((int)v1.y - (int)v0.y);
                 int steps = Math.Max(adx, ady);
 
-                RasterizerVertex step = computeVertexStep(ref v0, ref v1, steps);
+                RasterizerVertex step = ComputeVertexStep(ref v0, ref v1, steps);
 
                 RasterizerVertex v = v0;
                 while (steps-- > 0)
                 {
-                    PixelData p = pixelDataFromVertex(ref v);
+                    PixelData p = PixelDataFromVertex(ref v);
 
-                    if (rasterizer.scissorTest(v.x, v.y))
-                        shader.drawPixel(ref p);
+                    if (rasterizer.ScissorTest(v.x, v.y))
+                        shader.DrawPixel(ref p);
 
-                    stepVertex(ref v, ref step);
+                    StepVertex(ref v, ref step);
                 }
             }
 
-            public unsafe void stepVertex(ref RasterizerVertex v, ref RasterizerVertex step)
+            public unsafe void StepVertex(ref RasterizerVertex v, ref RasterizerVertex step)
             {
                 v.x += step.x;
                 v.y += step.y;
@@ -177,7 +177,7 @@ namespace Renderer
                     v.pvar[i] += step.pvar[i];
             }
 
-            public unsafe RasterizerVertex computeVertexStep(ref RasterizerVertex v0, ref RasterizerVertex v1, int adx)
+            public unsafe RasterizerVertex ComputeVertexStep(ref RasterizerVertex v0, ref RasterizerVertex v1, int adx)
             {
                 RasterizerVertex step = new RasterizerVertex();
                 step.x = (v1.x - v0.x) / adx;
@@ -191,7 +191,7 @@ namespace Renderer
                 return step;
             }
 
-            public void drawTriangleBlockTemplate(ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2)
+            public void DrawTriangleBlockTemplate(ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2)
             {
                 // Compute triangle equations.
                 TriangleEquations eqn = new TriangleEquations(ref v0, ref v1, ref v2, shader.AVarCount, shader.PVarCount);
@@ -213,10 +213,10 @@ namespace Renderer
                 maxY = Math.Min(maxY, rasterizer.m_maxY);
 
                 // Round to block grid.
-                minX = minX & ~(Constants.BlockSize - 1);
-                maxX = maxX & ~(Constants.BlockSize - 1);
-                minY = minY & ~(Constants.BlockSize - 1);
-                maxY = maxY & ~(Constants.BlockSize - 1);
+                minX &= ~(Constants.BlockSize - 1);
+                maxX &= ~(Constants.BlockSize - 1);
+                minY &= ~(Constants.BlockSize - 1);
+                maxY &= ~(Constants.BlockSize - 1);
 
                 float s = Constants.BlockSize - 1;
 
@@ -258,22 +258,22 @@ namespace Renderer
                         bool e11Same = e11_0 == e11_1 == e11_2;
 
                         if (!e00Same || !e01Same || !e10Same || !e11Same)
-                            shader.drawBlock(ref eqn, x, y, true);
+                            shader.DrawBlock(ref eqn, x, y, true);
                     }
                     else if (result == 4)
                     {
                         // Fully Covered.
-                        shader.drawBlock(ref eqn, x, y, false);
+                        shader.DrawBlock(ref eqn, x, y, false);
                     }
                     else
                     {
                         // Partially Covered.
-                        shader.drawBlock(ref eqn, x, y, true);
+                        shader.DrawBlock(ref eqn, x, y, true);
                     }
                 }
             }
 
-            public unsafe void drawTriangleSpanTemplate(ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2)
+            public unsafe void DrawTriangleSpanTemplate(ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2)
             {
                 // Compute triangle equations.
                 TriangleEquations eqn = new TriangleEquations(ref v0, ref v1, ref v2, shader.AVarCount, shader.PVarCount);
@@ -298,13 +298,13 @@ namespace Renderer
                 {
                     ref RasterizerVertex l = ref m, r = ref t;
                     if (l.x > r.x) { var temp = l; l = r; r = temp; }
-                    drawTopFlatTriangle(ref eqn, ref l, ref r, ref b);
+                    DrawTopFlatTriangle(ref eqn, ref l, ref r, ref b);
                 }
                 else if (m.y == b.y)
                 {
                     ref RasterizerVertex l = ref m, r = ref b;
                     if (l.x > r.x) { var temp = l; l = r; r = temp; }
-                    drawBottomFlatTriangle(ref eqn, ref t, ref l, ref r);
+                    DrawBottomFlatTriangle(ref eqn, ref t, ref l, ref r);
                 }
                 else
                 {
@@ -320,12 +320,12 @@ namespace Renderer
 
                     if (l.x > r.x) { var temp = l; l = r; r = temp; }
 
-                    drawBottomFlatTriangle(ref eqn, ref t, ref l, ref r);
-                    drawTopFlatTriangle(ref eqn, ref l, ref r, ref b);
+                    DrawBottomFlatTriangle(ref eqn, ref t, ref l, ref r);
+                    DrawTopFlatTriangle(ref eqn, ref l, ref r, ref b);
                 }
             }
 
-            public void drawBottomFlatTriangle(ref TriangleEquations eqn, ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2)
+            public void DrawBottomFlatTriangle(ref TriangleEquations eqn, ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2)
             {
                 float invslope1 = (v1.x - v0.x) / (v1.y - v0.y);
                 float invslope2 = (v2.x - v0.x) / (v2.y - v0.y);
@@ -343,14 +343,14 @@ namespace Renderer
                     int xl = Math.Max(rasterizer.m_minX, (int)curx1);
                     int xr = Math.Min(rasterizer.m_maxX, (int)curx2);
 
-                    shader.drawSpan(ref eqn, xl, scanlineY, xr);
+                    shader.DrawSpan(ref eqn, xl, scanlineY, xr);
 
                     // curx1 += invslope1;
                     // curx2 += invslope2;
                 }
             }
 
-            public void drawTopFlatTriangle(ref TriangleEquations eqn, ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2)
+            public void DrawTopFlatTriangle(ref TriangleEquations eqn, ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2)
             {
                 float invslope1 = (v2.x - v0.x) / (v2.y - v0.y);
                 float invslope2 = (v2.x - v1.x) / (v2.y - v1.y);
@@ -368,13 +368,13 @@ namespace Renderer
                     int xl = Math.Max(rasterizer.m_minX, (int)curx1);
                     int xr = Math.Min(rasterizer.m_maxX, (int)curx2);
 
-                    shader.drawSpan(ref eqn, xl, scanlineY, xr);
+                    shader.DrawSpan(ref eqn, xl, scanlineY, xr);
                     // curx1 -= invslope1;
                     // curx2 -= invslope2;
                 }
             }
 
-            public void drawTriangleAdaptiveTemplate(ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2)
+            public void DrawTriangleAdaptiveTemplate(ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2)
             {
                 // Compute triangle bounding box.
                 float minX = (float)Math.Min(Math.Min(v0.x, v1.x), v2.x);
@@ -386,25 +386,25 @@ namespace Renderer
 
                 if (orient > 0.4 && orient < 1.6)
 
-                    drawTriangleBlockTemplate(ref v0, ref v1, ref v2);
+                    DrawTriangleBlockTemplate(ref v0, ref v1, ref v2);
                 else
-                    drawTriangleSpanTemplate(ref v0, ref v1, ref v2);
+                    DrawTriangleSpanTemplate(ref v0, ref v1, ref v2);
             }
 
-            public void drawTriangleModeTemplate(ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2)
+            public void DrawTriangleModeTemplate(ref RasterizerVertex v0, ref RasterizerVertex v1, ref RasterizerVertex v2)
             {
                 switch (rasterizer.rasterMode)
                 {
                     case RasterMode.Span:
-                        drawTriangleSpanTemplate(ref v0, ref v1, ref v2);
+                        DrawTriangleSpanTemplate(ref v0, ref v1, ref v2);
                         break;
 
                     case RasterMode.Block:
-                        drawTriangleBlockTemplate(ref v0, ref v1, ref v2);
+                        DrawTriangleBlockTemplate(ref v0, ref v1, ref v2);
                         break;
 
                     case RasterMode.Adaptive:
-                        drawTriangleAdaptiveTemplate(ref v0, ref v1, ref v2);
+                        DrawTriangleAdaptiveTemplate(ref v0, ref v1, ref v2);
                         break;
                 }
             }

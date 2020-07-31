@@ -14,6 +14,6 @@ namespace Renderer
 
         /// Process a single vertex.
         /** Implement this in your own vertex shader. */
-        void processVertex(int index, ref RasterizerVertex output);
+        void ProcessVertex(int index, ref RasterizerVertex output);
     };
 }

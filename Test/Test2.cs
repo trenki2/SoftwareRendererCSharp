@@ -29,14 +29,14 @@ namespace Test
             public Bitmap Screen { get; set; }
             public Bitmap Texture { get; set; }
 
-            public void drawBlock(ref TriangleEquations eqn, int x, int y, bool testEdges)
-                => PixelShaderHelper<PixelShader>.drawBlock(ref this, ref eqn, x, y, testEdges);
+            public void DrawBlock(ref TriangleEquations eqn, int x, int y, bool testEdges)
+                => PixelShaderHelper<PixelShader>.DrawBlock(ref this, ref eqn, x, y, testEdges);
 
-            public void drawSpan(ref TriangleEquations eqn, int x, int y, int x2)
-                => PixelShaderHelper<PixelShader>.drawSpan(ref this, ref eqn, x, y, x2);
+            public void DrawSpan(ref TriangleEquations eqn, int x, int y, int x2)
+                => PixelShaderHelper<PixelShader>.DrawSpan(ref this, ref eqn, x, y, x2);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public unsafe void drawPixel(ref PixelData p)
+            public unsafe void DrawPixel(ref PixelData p)
             {
                 // TODO: check and update depth buffer with p.z;
 
@@ -55,7 +55,7 @@ namespace Test
             public Matrix4x4 ModelViewProjectionMatrix { get; set; }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public unsafe void processVertex(int index, ref RasterizerVertex o)
+            public unsafe void ProcessVertex(int index, ref RasterizerVertex o)
             {
                 var v = Data[index];
                 var pos = Vector4.Transform(new Vector4(v.position, 1.0f), ModelViewProjectionMatrix);
@@ -88,23 +88,23 @@ namespace Test
             var r = new Rasterizer();
             var v = new VertexProcessor(r);
 
-            r.setRasterMode(RasterMode.Span);
-            r.setScissorRect(0, 0, 640, 480);
+            r.SetRasterMode(RasterMode.Span);
+            r.SetScissorRect(0, 0, 640, 480);
 
-            v.setViewport(0, 0, 640, 480);
-            v.setCullMode(CullMode.CW);
+            v.SetViewport(0, 0, 640, 480);
+            v.SetCullMode(CullMode.CW);
 
             var pixelShader = new PixelShader();
             pixelShader.Screen = screen;
             pixelShader.Texture = texture;
-            r.setPixelShader(pixelShader);
+            r.SetPixelShader(pixelShader);
 
             var vertexShader = new VertexShader();
             vertexShader.Data = vdata;
             vertexShader.ModelViewProjectionMatrix = lookAt * perspective;
-            v.setVertexShader(vertexShader);
+            v.SetVertexShader(vertexShader);
 
-            v.drawElements(DrawMode.Triangle, idata.Count, idata);
+            v.DrawElements(DrawMode.Triangle, idata.Count, idata);
 
             return screen;
         }

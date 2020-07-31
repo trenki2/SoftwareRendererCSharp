@@ -17,7 +17,7 @@ namespace Renderer
             m_indicesOut = new List<int>();
         }
 
-        public void init(List<RasterizerVertex> vertices, int i1, int i2, int i3, int avarCount, int pvarCount)
+        public void Init(List<RasterizerVertex> vertices, int i1, int i2, int i3, int avarCount, int pvarCount)
         {
             m_avarCount = avarCount;
             m_pvarCount = pvarCount;
@@ -32,9 +32,9 @@ namespace Renderer
         }
 
         // Clip the poly to the plane given by the formula a * x + b * y + c * z + d * w.
-        public void clipToPlane(float a, float b, float c, float d)
+        public void ClipToPlane(float a, float b, float c, float d)
         {
-            if (fullyClipped())
+            if (IsFullyClipped())
                 return;
 
             m_indicesOut.Clear();
@@ -58,7 +58,7 @@ namespace Renderer
                 {
                     float t = dp < 0 ? dpPrev / (dpPrev - dp) : -dpPrev / (dp - dpPrev);
 
-                    RasterizerVertex vOut = Helper.interpolateVertex(m_vertices[idxPrev], m_vertices[idx], t, m_avarCount, m_pvarCount);
+                    RasterizerVertex vOut = Helper.InterpolateVertex(m_vertices[idxPrev], m_vertices[idx], t, m_avarCount, m_pvarCount);
                     m_vertices.Add(vOut);
                     m_indicesOut.Add(m_vertices.Count - 1);
                 }
@@ -72,12 +72,12 @@ namespace Renderer
             m_indicesOut = temp;
         }
 
-        public List<int> indices()
+        public List<int> GetIndices()
         {
             return m_indicesIn;
         }
 
-        public bool fullyClipped()
+        public bool IsFullyClipped()
         {
             return m_indicesIn.Count < 3;
         }

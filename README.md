@@ -29,15 +29,15 @@ public struct PixelShader : IPixelShader
   public Bitmap Screen { get; set; }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public void drawBlock(ref TriangleEquations eqn, int x, int y, bool testEdges)
+  public void DrawBlock(ref TriangleEquations eqn, int x, int y, bool testEdges)
     => PixelShaderHelper<PixelShader>.drawBlock(ref this, ref eqn, x, y, testEdges);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public void drawSpan(ref TriangleEquations eqn, int x, int y, int x2)
+  public void DrawSpan(ref TriangleEquations eqn, int x, int y, int x2)
     => PixelShaderHelper<PixelShader>.drawSpan(ref this, ref eqn, x, y, x2);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public void drawPixel(ref PixelData p)
+  public void DrawPixel(ref PixelData p)
   {
     // This is for demonstration only. It is slow. In real code you 
     // would have to write to a color buffer directly.
@@ -58,7 +58,7 @@ public struct VertexShader : IVertexShader
   public List<VertexData> VertexData { get; set; }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public unsafe void processVertex(int index, ref RasterizerVertex output)
+  public unsafe void ProcessVertex(int index, ref RasterizerVertex output)
   {
     var data = VertexData[index];
     output.x = data.x;
@@ -75,9 +75,9 @@ public struct VertexShader : IVertexShader
 var r = new Rasterizer();
 var v = new VertexProcessor(r);
 
-r.setScissorRect(0, 0, 640, 480);
-v.setViewport(0, 0, 640, 480);
-v.setCullMode(CullMode.None);
+r.SetScissorRect(0, 0, 640, 480);
+v.SetViewport(0, 0, 640, 480);
+v.SetCullMode(CullMode.None);
 
 var indices = new List<int>();
 var vertices = new List<VertexData>();
@@ -89,13 +89,13 @@ var vertices = new List<VertexData>();
 // updated since it is a struct and will be copied.
 var pixelShader = new PixelShader();
 pixelShader.Screen = new Bitmap(640, 480);
-r.setPixelShader(pixelShader);
+r.SetPixelShader(pixelShader);
 
 var vertexShader = new VertexShader();
 vertexShader.VertexData = vertices;
-v.setVertexShader(vertexShader);
+v.SetVertexShader(vertexShader);
 
-v.drawElements(DrawMode.Triangle, indexData.size(), indexData);
+v.DrawElements(DrawMode.Triangle, indexData.size(), indexData);
 
 ```
 

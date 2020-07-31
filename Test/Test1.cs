@@ -23,14 +23,14 @@ namespace Test
 
             public Bitmap Bitmap { get; set; }
 
-            public void drawBlock(ref TriangleEquations eqn, int x, int y, bool testEdges)
-                => PixelShaderHelper<PixelShader>.drawBlock(ref this, ref eqn, x, y, testEdges);
+            public void DrawBlock(ref TriangleEquations eqn, int x, int y, bool testEdges)
+                => PixelShaderHelper<PixelShader>.DrawBlock(ref this, ref eqn, x, y, testEdges);
 
-            public void drawSpan(ref TriangleEquations eqn, int x, int y, int x2)
-                => PixelShaderHelper<PixelShader>.drawSpan(ref this, ref eqn, x, y, x2);
+            public void DrawSpan(ref TriangleEquations eqn, int x, int y, int x2)
+                => PixelShaderHelper<PixelShader>.DrawSpan(ref this, ref eqn, x, y, x2);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public unsafe void drawPixel(ref PixelData p)
+            public unsafe void DrawPixel(ref PixelData p)
             {
                 Bitmap.SetPixel(p.x, p.y, Color.FromArgb(
                     255,
@@ -49,7 +49,7 @@ namespace Test
             public List<VertexData> VertexData { get; set; }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public unsafe void processVertex(int index, ref RasterizerVertex output)
+            public unsafe void ProcessVertex(int index, ref RasterizerVertex output)
             {
                 var data = VertexData[index];
                 output.x = data.x;
@@ -72,9 +72,9 @@ namespace Test
             var pixelShader = new PixelShader();
             var vertexShader = new VertexShader();
 
-            r.setScissorRect(0, 0, 640, 480);
-            v.setViewport(100, 100, 640 - 200, 480 - 200);
-            v.setCullMode(CullMode.None);
+            r.SetScissorRect(0, 0, 640, 480);
+            v.SetViewport(100, 100, 640 - 200, 480 - 200);
+            v.SetCullMode(CullMode.None);
 
             var indices = new List<int> { 0, 1, 2 };
             var vertices = new List<VertexData>();
@@ -109,10 +109,10 @@ namespace Test
             pixelShader.Bitmap = bitmap;
             vertexShader.VertexData = vertices;
 
-            r.setPixelShader(pixelShader);
-            v.setVertexShader(vertexShader);
+            r.SetPixelShader(pixelShader);
+            v.SetVertexShader(vertexShader);
 
-            v.drawElements(DrawMode.Triangle, 3, indices);
+            v.DrawElements(DrawMode.Triangle, 3, indices);
 
             return bitmap;
         }

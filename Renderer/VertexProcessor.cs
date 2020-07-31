@@ -24,12 +24,12 @@ namespace Renderer
         private CullMode m_cullMode;
         private IRasterizer m_rasterizer;
 
-        private PolyClipper polyClipper = new PolyClipper();
-        private List<RasterizerVertex> m_verticesOut = new List<RasterizerVertex>();
-        private List<int> m_indicesOut = new List<int>();
-        private List<ClipMask> m_clipMask = new List<ClipMask>();
-        private List<bool> m_alreadyProcessed = new List<bool>();
-        private VertexCache m_vCache = new VertexCache();
+        private readonly PolyClipper polyClipper = new PolyClipper();
+        private readonly List<RasterizerVertex> m_verticesOut = new List<RasterizerVertex>();
+        private readonly List<int> m_indicesOut = new List<int>();
+        private readonly List<ClipMask> m_clipMask = new List<ClipMask>();
+        private readonly List<bool> m_alreadyProcessed = new List<bool>();
+        private readonly VertexCache m_vCache = new VertexCache();
 
         private IVertexShader m_shader;
 
@@ -41,14 +41,14 @@ namespace Renderer
         }
 
         /// Change the rasterizer where the primitives are sent.
-        public void setRasterizer(IRasterizer rasterizer)
+        public void SetRasterizer(IRasterizer rasterizer)
         {
             m_rasterizer = rasterizer;
         }
 
         /// Set the viewport.
         /** Top-Left is (0, 0) */
-        public void setViewport(int x, int y, int width, int height)
+        public void SetViewport(int x, int y, int width, int height)
         {
             m_viewport.x = x;
             m_viewport.y = y;
@@ -63,7 +63,7 @@ namespace Renderer
 
         /// Set the depth range.
         /** Default is (0, 1) */
-        public void setDepthRange(float n, float f)
+        public void SetDepthRange(float n, float f)
         {
             m_depthRange.n = n;
             m_depthRange.f = f;
@@ -71,19 +71,19 @@ namespace Renderer
 
         /// Set the cull mode.
         /** Default is CullMode::CW to cull clockwise triangles. */
-        public void setCullMode(CullMode mode)
+        public void SetCullMode(CullMode mode)
         {
             m_cullMode = mode;
         }
 
         /// Set the vertex shader.
-        public void setVertexShader(IVertexShader shader)
+        public void SetVertexShader(IVertexShader shader)
         {
             m_shader = shader;
         }
 
         /// Draw a number of points, lines or triangles.
-        public void drawElements(DrawMode mode, int count, List<int> indices)
+        public void DrawElements(DrawMode mode, int count, List<int> indices)
         {
             m_verticesOut.Clear();
             m_indicesOut.Clear();
@@ -103,7 +103,7 @@ namespace Renderer
                 else
                 {
                     RasterizerVertex vOut = new RasterizerVertex();
-                    processVertex(index, ref vOut);
+                    ProcessVertex(index, ref vOut);
 
                     outputIndex = m_verticesOut.Count;
                     m_indicesOut.Add(outputIndex);
@@ -112,16 +112,16 @@ namespace Renderer
                     m_vCache.set(index, outputIndex);
                 }
 
-                if (primitiveCount(mode) >= 1024)
+                if (PrimitiveCount(mode) >= 1024)
                 {
-                    processPrimitives(mode);
+                    ProcessPrimitives(mode);
                     m_verticesOut.Clear();
                     m_indicesOut.Clear();
                     m_vCache.clear();
                 }
             }
 
-            processPrimitives(mode);
+            ProcessPrimitives(mode);
         }
 
         [Flags]
@@ -135,7 +135,7 @@ namespace Renderer
             NegZ = 0x20
         }
 
-        private ClipMask clipMask(RasterizerVertex v)
+        private ClipMask GetClipMask(RasterizerVertex v)
         {
             ClipMask mask = 0;
             if (v.w - v.x < 0) mask |= ClipMask.PosX;
@@ -147,19 +147,19 @@ namespace Renderer
             return mask;
         }
 
-        private void processVertex(int index, ref RasterizerVertex output)
+        private void ProcessVertex(int index, ref RasterizerVertex output)
         {
-            m_shader.processVertex(index, ref output);
+            m_shader.ProcessVertex(index, ref output);
         }
 
-        private void clipPoints()
+        private void ClipPoints()
         {
             m_clipMask.Clear();
             for (int i = 0; i < m_verticesOut.Count; i++)
                 m_clipMask.Add(0);
 
             for (int i = 0; i < m_verticesOut.Count; i++)
-                m_clipMask[i] = clipMask(m_verticesOut[i]);
+                m_clipMask[i] = GetClipMask(m_verticesOut[i]);
 
             for (int i = 0; i < m_indicesOut.Count; i++)
             {
@@ -168,14 +168,14 @@ namespace Renderer
             }
         }
 
-        private void clipLines()
+        private void ClipLines()
         {
             m_clipMask.Clear();
             for (int i = 0; i < m_verticesOut.Count; i++)
                 m_clipMask.Add(0);
 
             for (int i = 0; i < m_verticesOut.Count; i++)
-                m_clipMask[i] = clipMask(m_verticesOut[i]);
+                m_clipMask[i] = GetClipMask(m_verticesOut[i]);
 
             for (int i = 0; i < m_indicesOut.Count; i += 2)
             {
@@ -205,28 +205,28 @@ namespace Renderer
 
                 if (m_clipMask[index0] > 0)
                 {
-                    RasterizerVertex newV = Helper.interpolateVertex(v0, v1, lineClipper.t0, m_shader.AVarCount, m_shader.PVarCount);
+                    RasterizerVertex newV = Helper.InterpolateVertex(v0, v1, lineClipper.t0, m_shader.AVarCount, m_shader.PVarCount);
                     m_verticesOut.Add(newV);
                     m_indicesOut[i] = m_verticesOut.Count - 1;
                 }
 
                 if (m_clipMask[index1] > 0)
                 {
-                    RasterizerVertex newV = Helper.interpolateVertex(v0, v1, lineClipper.t1, m_shader.AVarCount, m_shader.PVarCount);
+                    RasterizerVertex newV = Helper.InterpolateVertex(v0, v1, lineClipper.t1, m_shader.AVarCount, m_shader.PVarCount);
                     m_verticesOut.Add(newV);
                     m_indicesOut[i + 1] = m_verticesOut.Count - 1;
                 }
             }
         }
 
-        private void clipTriangles()
+        private void ClipTriangles()
         {
             m_clipMask.Clear();
             for (int i = 0; i < m_verticesOut.Count; i++)
                 m_clipMask.Add(0);
 
             for (int i = 0; i < m_verticesOut.Count; i++)
-                m_clipMask[i] = clipMask(m_verticesOut[i]);
+                m_clipMask[i] = GetClipMask(m_verticesOut[i]);
 
             int n = m_indicesOut.Count;
 
@@ -238,16 +238,16 @@ namespace Renderer
 
                 ClipMask clipMask = m_clipMask[i0] | m_clipMask[i1] | m_clipMask[i2];
 
-                polyClipper.init(m_verticesOut, i0, i1, i2, m_shader.AVarCount, m_shader.PVarCount);
+                polyClipper.Init(m_verticesOut, i0, i1, i2, m_shader.AVarCount, m_shader.PVarCount);
 
-                if ((clipMask & ClipMask.PosX) == ClipMask.PosX) polyClipper.clipToPlane(-1, 0, 0, 1);
-                if ((clipMask & ClipMask.NegX) == ClipMask.NegX) polyClipper.clipToPlane(1, 0, 0, 1);
-                if ((clipMask & ClipMask.PosY) == ClipMask.PosY) polyClipper.clipToPlane(0, -1, 0, 1);
-                if ((clipMask & ClipMask.NegY) == ClipMask.NegY) polyClipper.clipToPlane(0, 1, 0, 1);
-                if ((clipMask & ClipMask.PosZ) == ClipMask.PosZ) polyClipper.clipToPlane(0, 0, -1, 1);
-                if ((clipMask & ClipMask.NegZ) == ClipMask.NegZ) polyClipper.clipToPlane(0, 0, 1, 1);
+                if ((clipMask & ClipMask.PosX) == ClipMask.PosX) polyClipper.ClipToPlane(-1, 0, 0, 1);
+                if ((clipMask & ClipMask.NegX) == ClipMask.NegX) polyClipper.ClipToPlane(1, 0, 0, 1);
+                if ((clipMask & ClipMask.PosY) == ClipMask.PosY) polyClipper.ClipToPlane(0, -1, 0, 1);
+                if ((clipMask & ClipMask.NegY) == ClipMask.NegY) polyClipper.ClipToPlane(0, 1, 0, 1);
+                if ((clipMask & ClipMask.PosZ) == ClipMask.PosZ) polyClipper.ClipToPlane(0, 0, -1, 1);
+                if ((clipMask & ClipMask.NegZ) == ClipMask.NegZ) polyClipper.ClipToPlane(0, 0, 1, 1);
 
-                if (polyClipper.fullyClipped())
+                if (polyClipper.IsFullyClipped())
                 {
                     m_indicesOut[i] = -1;
                     m_indicesOut[i + 1] = -1;
@@ -255,7 +255,7 @@ namespace Renderer
                     continue;
                 }
 
-                List<int> indices = polyClipper.indices();
+                List<int> indices = polyClipper.GetIndices();
 
                 m_indicesOut[i] = indices[0];
                 m_indicesOut[i + 1] = indices[1];
@@ -269,32 +269,32 @@ namespace Renderer
             }
         }
 
-        private void clipPrimitives(DrawMode mode)
+        private void ClipPrimitives(DrawMode mode)
         {
             switch (mode)
             {
                 case DrawMode.Point:
-                    clipPoints();
+                    ClipPoints();
                     break;
 
                 case DrawMode.Line:
-                    clipLines();
+                    ClipLines();
                     break;
 
                 case DrawMode.Triangle:
-                    clipTriangles();
+                    ClipTriangles();
                     break;
             }
         }
 
-        private void processPrimitives(DrawMode mode)
+        private void ProcessPrimitives(DrawMode mode)
         {
-            clipPrimitives(mode);
-            transformVertices();
-            drawPrimitives(mode);
+            ClipPrimitives(mode);
+            TransformVertices();
+            DrawPrimitives(mode);
         }
 
-        private int primitiveCount(DrawMode mode)
+        private int PrimitiveCount(DrawMode mode)
         {
             int factor = 1;
 
@@ -308,26 +308,26 @@ namespace Renderer
             return m_indicesOut.Count / factor;
         }
 
-        private void drawPrimitives(DrawMode mode)
+        private void DrawPrimitives(DrawMode mode)
         {
             switch (mode)
             {
                 case DrawMode.Triangle:
-                    cullTriangles();
-                    m_rasterizer.drawTriangleList(m_verticesOut, m_indicesOut, m_indicesOut.Count);
+                    CullTriangles();
+                    m_rasterizer.DrawTriangleList(m_verticesOut, m_indicesOut, m_indicesOut.Count);
                     break;
 
                 case DrawMode.Line:
-                    m_rasterizer.drawLineList(m_verticesOut, m_indicesOut, m_indicesOut.Count);
+                    m_rasterizer.DrawLineList(m_verticesOut, m_indicesOut, m_indicesOut.Count);
                     break;
 
                 case DrawMode.Point:
-                    m_rasterizer.drawPointList(m_verticesOut, m_indicesOut, m_indicesOut.Count);
+                    m_rasterizer.DrawPointList(m_verticesOut, m_indicesOut, m_indicesOut.Count);
                     break;
             }
         }
 
-        private void cullTriangles()
+        private void CullTriangles()
         {
             for (int i = 0; i + 3 <= m_indicesOut.Count; i += 3)
             {
@@ -360,7 +360,7 @@ namespace Renderer
             }
         }
 
-        private void transformVertices()
+        private void TransformVertices()
         {
             m_alreadyProcessed.Clear();
             for (int i = 0; i < m_verticesOut.Count; i++)

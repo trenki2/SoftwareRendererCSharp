@@ -2,9 +2,9 @@
 {
     internal class Helper
     {
-        public static unsafe RasterizerVertex interpolateVertex(RasterizerVertex v0, RasterizerVertex v1, float t, int avarCount, int pvarCount)
+        public static unsafe RasterizerVertex InterpolateVertex(RasterizerVertex v0, RasterizerVertex v1, float t, int avarCount, int pvarCount)
         {
-            RasterizerVertex result;
+            RasterizerVertex result = new RasterizerVertex();
 
             result.x = v0.x * (1.0f - t) + v1.x * t;
             result.y = v0.y * (1.0f - t) + v1.y * t;

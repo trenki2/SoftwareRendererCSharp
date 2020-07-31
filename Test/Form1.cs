@@ -20,13 +20,13 @@ namespace Test
             InitializeComponent();
         }
 
-        private void buttonTest1_Click(object sender, EventArgs e)
+        private void ButtonTest1_Click(object sender, EventArgs e)
         {
             var test = new Test1();
             pictureBox1.Image = test.Run();
         }
 
-        private void buttonTest2_Click(object sender, EventArgs e)
+        private void ButtonTest2_Click(object sender, EventArgs e)
         {
             var test = new Test2();
             pictureBox1.Image = test.Run();

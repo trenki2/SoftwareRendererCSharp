@@ -7,14 +7,14 @@ namespace Renderer
     {
         /// Draw a list of points.
         /** Points with indices == -1 will be ignored. */
-        void drawPointList(List<RasterizerVertex> vertices, List<int> indices, int indexCount);
+        void DrawPointList(List<RasterizerVertex> vertices, List<int> indices, int indexCount);
 
         /// Draw a list if lines.
         /** Lines  with indices == -1 will be ignored. */
-        void drawLineList(List<RasterizerVertex> vertices, List<int> indices, int indexCount);
+        void DrawLineList(List<RasterizerVertex> vertices, List<int> indices, int indexCount);
 
         /// Draw a list of triangles.
         /** Triangles  with indices == -1 will be ignored. */
-        void drawTriangleList(List<RasterizerVertex> vertices, List<int> indices, int indexCount);
+        void DrawTriangleList(List<RasterizerVertex> vertices, List<int> indices, int indexCount);
     };
 }

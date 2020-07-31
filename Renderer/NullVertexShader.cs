@@ -9,7 +9,7 @@ namespace Renderer
         public int AVarCount => 0;
         public int PVarCount => 0;
 
-        public void processVertex(int index, ref RasterizerVertex output)
+        public void ProcessVertex(int index, ref RasterizerVertex output)
         {
         }
     }

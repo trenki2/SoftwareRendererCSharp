@@ -51,7 +51,7 @@
             this.buttonTest1.TabIndex = 1;
             this.buttonTest1.Text = "Test1";
             this.buttonTest1.UseVisualStyleBackColor = true;
-            this.buttonTest1.Click += new System.EventHandler(this.buttonTest1_Click);
+            this.buttonTest1.Click += new System.EventHandler(this.ButtonTest1_Click);
             // 
             // buttonTest2
             // 
@@ -61,7 +61,7 @@
             this.buttonTest2.TabIndex = 2;
             this.buttonTest2.Text = "Test2";
             this.buttonTest2.UseVisualStyleBackColor = true;
-            this.buttonTest2.Click += new System.EventHandler(this.buttonTest2_Click);
+            this.buttonTest2.Click += new System.EventHandler(this.ButtonTest2_Click);
             // 
             // Form1
             // 

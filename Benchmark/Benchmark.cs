@@ -28,15 +28,15 @@ namespace Benchmark
             public int Height { get; set; }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void drawBlock(ref TriangleEquations eqn, int x, int y, bool testEdges)
-                => PixelShaderHelper<PixelShader>.drawBlock(ref this, ref eqn, x, y, testEdges);
+            public void DrawBlock(ref TriangleEquations eqn, int x, int y, bool testEdges)
+                => PixelShaderHelper<PixelShader>.DrawBlock(ref this, ref eqn, x, y, testEdges);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void drawSpan(ref TriangleEquations eqn, int x, int y, int x2)
-                => PixelShaderHelper<PixelShader>.drawSpan(ref this, ref eqn, x, y, x2);
+            public void DrawSpan(ref TriangleEquations eqn, int x, int y, int x2)
+                => PixelShaderHelper<PixelShader>.DrawSpan(ref this, ref eqn, x, y, x2);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void drawPixel(ref PixelData p)
+            public void DrawPixel(ref PixelData p)
             {
                 Buffer[p.x + Width * p.y] = 1;
             }
@@ -50,7 +50,7 @@ namespace Benchmark
             public List<VertexData> VertexData { get; set; }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public unsafe void processVertex(int index, ref RasterizerVertex output)
+            public unsafe void ProcessVertex(int index, ref RasterizerVertex output)
             {
                 var data = VertexData[index];
                 output.x = data.x;
@@ -71,9 +71,9 @@ namespace Benchmark
             var pixelShader = new PixelShader();
             var vertexShader = new VertexShader();
 
-            r.setScissorRect(0, 0, 640, 480);
-            v.setViewport(0, 0, 640, 480);
-            v.setCullMode(CullMode.None);
+            r.SetScissorRect(0, 0, 640, 480);
+            v.SetViewport(0, 0, 640, 480);
+            v.SetCullMode(CullMode.None);
 
             var indices = new List<int>();
             var vertices = new List<VertexData>();
@@ -110,11 +110,11 @@ namespace Benchmark
             pixelShader.Height = 480;
             vertexShader.VertexData = vertices;
 
-            r.setPixelShader(pixelShader);
-            v.setVertexShader(vertexShader);
+            r.SetPixelShader(pixelShader);
+            v.SetVertexShader(vertexShader);
 
             var sw = Stopwatch.StartNew();
-            v.drawElements(DrawMode.Triangle, indices.Count, indices);
+            v.DrawElements(DrawMode.Triangle, indices.Count, indices);
             Console.WriteLine(sw.ElapsedMilliseconds);
         }
     }
